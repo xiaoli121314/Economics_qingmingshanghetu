@@ -544,6 +544,92 @@
   .pricing-cta:hover { opacity: 0.85; }
   .pricing-note { font-size: 12px; color: rgba(245,240,232,0.25); margin-top: 20px; letter-spacing: 0.05em; }
 
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(18,15,12,0.82);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--paper);
+    max-width: 420px;
+    width: 90%;
+    padding: 48px 40px 40px;
+    position: relative;
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none; border: none;
+    font-size: 22px; color: var(--muted);
+    cursor: pointer; line-height: 1;
+  }
+  .modal-close:hover { color: var(--ink); }
+  .modal-eyebrow {
+    font-size: 11px; letter-spacing: 0.2em;
+    color: var(--warm); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-eyebrow::before {
+    content: ''; display: block;
+    width: 20px; height: 1px; background: var(--warm);
+  }
+  .modal-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 26px; font-weight: 700;
+    color: var(--ink); margin-bottom: 8px; line-height: 1.3;
+  }
+  .modal-sub {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 32px; line-height: 1.8;
+  }
+  .modal-number {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px 24px;
+    background: var(--ink);
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+  }
+  .modal-number:hover { background: #2a2520; }
+  .modal-number-icon {
+    font-size: 18px; color: var(--warm); flex-shrink: 0;
+  }
+  .modal-number-label {
+    font-size: 11px; color: rgba(245,240,232,0.4);
+    letter-spacing: 0.1em; margin-bottom: 3px;
+  }
+  .modal-number-val {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px; font-weight: 700; color: var(--paper);
+    letter-spacing: 0.05em;
+  }
+  .modal-wechat {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 24px;
+    border: 1px solid var(--light);
+    background: white;
+  }
+  .modal-wechat-icon { font-size: 18px; color: var(--warm); flex-shrink: 0; }
+  .modal-wechat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 3px; }
+  .modal-wechat-val { font-size: 16px; color: var(--ink); font-weight: 500; letter-spacing: 0.05em; }
+  .modal-note {
+    font-size: 11px; color: var(--muted);
+    text-align: center; margin-top: 20px; line-height: 1.8;
+  }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
@@ -587,7 +673,7 @@
     <span class="tag">零基础</span>
     <span class="tag">中华艺术宫实地探索</span>
   </div>
-  <button class="hero-cta">了解课程详情 →</button>
+  <button class="hero-cta" onclick="openModal()">了解课程详情 →</button>
 </section>
 
 
@@ -898,9 +984,49 @@
       <span class="pricing-inc-label">次实地田野调查</span>
     </div>
   </div>
-  <button class="pricing-cta">立即报名</button>
+  <button class="pricing-cta" onclick="openModal()">立即报名</button>
   <div class="pricing-note">适合 12–16 岁 · 零基础 · 名额有限，报满即止</div>
 </section>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-eyebrow">联系我们</div>
+    <div class="modal-title">预约咨询<br>或直接报名</div>
+    <div class="modal-sub">每期仅招收 4–6 名学生，欢迎致电或添加微信了解详情。</div>
+    <a class="modal-number" href="tel:19521444636">
+      <div class="modal-number-icon">☎</div>
+      <div>
+        <div class="modal-number-label">电话 / 微信同号</div>
+        <div class="modal-number-val">195 2144 4636</div>
+      </div>
+    </a>
+    <div class="modal-wechat">
+      <div class="modal-wechat-icon">💬</div>
+      <div>
+        <div class="modal-wechat-label">微信号</div>
+        <div class="modal-wechat-val">19521444636</div>
+      </div>
+    </div>
+    <div class="modal-note">工作日 10:00–18:00 均可联系<br>也可发送微信消息，看到即回</div>
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById('contactModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('contactModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('contactModal')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
 
 </body>
 </html>
